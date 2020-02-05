@@ -1,12 +1,13 @@
 import { User } from './User';
 import { Company } from './Company';
 
-interface Mappable {
-  zoom: number;
+export interface Mappable {
   location: {
     lat: number;
     lng: number;
   };
+  color: string;
+  markerContent(): string;
 }
 
 export class CompanyMap {
@@ -22,12 +23,17 @@ export class CompanyMap {
     });
   }
   addUserMarker(mappable: Mappable): void {
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       map: this.googleMap,
       position: {
         lat: mappable.location.lat,
         lng: mappable.location.lng
       }
+    });
+    marker.addListener('click', () => {
+      const infoWindow = new google.maps.InfoWindow({
+        content: mappable.markerContent()
+      });
     });
   }
 }
